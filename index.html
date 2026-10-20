@@ -502,6 +502,7 @@
         <label>Last name<input type="text" name="last" required autocomplete="family-name"></label>
       </div>
       <label>Business email<input type="email" name="email" required placeholder="you@company.de" autocomplete="email"></label>
+      <label>Phone (optional)<input type="tel" name="phone" placeholder="+49 …" autocomplete="tel"></label>
       <div class="row">
         <label>Company<input type="text" name="company" autocomplete="organization"></label>
         <label>Country
@@ -580,7 +581,7 @@
       <p>Nexus Analysis, Hogenestweg 24, 12353 Berlin, Germany. Contact: pradeep@nexus-analysis.com. Owner: Pradeep Kumar Reddy Vaddamani <span class="todo">TO CONFIRM</span>.</p>
       <h4>2. Data we process</h4>
       <ul>
-        <li><strong>Contact form:</strong> first and last name, business email, company, country, service of interest, message content. Processed to answer your enquiry (Art. 6 Abs. 1 lit. b GDPR, pre-contractual measures) and on the basis of our legitimate interest in handling business enquiries (Art. 6 Abs. 1 lit. f GDPR).</li>
+        <li><strong>Contact form:</strong> first and last name, business email, phone number (optional, only if you enter it), company, country, service of interest, and your message, in which you tell us what you expect from us. Processed to answer your enquiry (Art. 6 Abs. 1 lit. b GDPR, pre-contractual measures) and on the basis of our legitimate interest in handling business enquiries (Art. 6 Abs. 1 lit. f GDPR).</li>
         <li><strong>Server logs:</strong> anonymised IP address, browser type and version, operating system, date and time, pages visited. Processed for security and stable operation (Art. 6 Abs. 1 lit. f GDPR).</li>
         <li><strong>Email and WhatsApp:</strong> the content of messages you send us, used to answer your enquiry.</li>
       </ul>
@@ -814,7 +815,7 @@
     e.preventDefault();
     const d = new FormData(this);
     const payload = {
-      first: d.get('first'), last: d.get('last'), email: d.get('email'),
+      first: d.get('first'), last: d.get('last'), email: d.get('email'), phone: d.get('phone'),
       company: d.get('company'), country: d.get('country'),
       service: labels[d.get('service')] || d.get('service'),
       message: d.get('message'), consent: !!d.get('consent'), website: d.get('website')
@@ -841,6 +842,25 @@
       submitBtn.textContent = 'Send enquiry →';
     }
   });
+  // Legal pages open inside this page (no separate file needed)
+  const legalIds = ['impressum','datenschutz','nutzung','servicebedingungen','ki'];
+  function route() {
+    const h = location.hash || '';
+    const isLegal = h === '#legal' || h.startsWith('#legal/');
+    document.getElementById('site-main').hidden = isLegal;
+    document.getElementById('legal-view').hidden = !isLegal;
+    if (isLegal) {
+      const id = h.startsWith('#legal/') ? h.slice(7) : 'impressum';
+      const target = document.getElementById(legalIds.includes(id) ? id : 'impressum');
+      window.scrollTo(0, 0);
+      if (target) target.scrollIntoView({ block: 'start' });
+    } else if (h.length > 1) {
+      const t = document.getElementById(h.slice(1));
+      if (t) t.scrollIntoView({ block: 'start' });
+    }
+  }
+  window.addEventListener('hashchange', route);
+  route();
 </script>
 </body>
 </html>
