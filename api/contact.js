@@ -22,7 +22,7 @@ export default async function handler(req, res) {
   body = body || {};
 
   // Spam trap: real visitors never fill the hidden "website" field.
-  if (body.website) {
+  if (body.hp_trap) {
     return res.status(200).json({ ok: true });
   }
 
